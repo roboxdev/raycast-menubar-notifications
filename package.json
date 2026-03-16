@@ -1,0 +1,86 @@
+{
+  "$schema": "https://www.raycast.com/schemas/extension.json",
+  "name": "menubar-notifications",
+  "title": "Menubar Notifications",
+  "description": "Unified menubar notifications for Mail, Telegram, GitHub PRs, and Slack",
+  "icon": "command-icon.png",
+  "author": "robox",
+  "categories": ["Communication"],
+  "license": "MIT",
+  "commands": [
+    {
+      "name": "mail",
+      "title": "Mail Notifications",
+      "description": "Show unread email count from Apple Mail",
+      "mode": "menu-bar",
+      "interval": "1m"
+    },
+    {
+      "name": "telegram",
+      "title": "Telegram Notifications",
+      "description": "Show unread Telegram messages",
+      "mode": "menu-bar",
+      "interval": "1m"
+    },
+    {
+      "name": "github-prs",
+      "title": "GitHub PR Notifications",
+      "description": "Show PRs requesting your review",
+      "mode": "menu-bar",
+      "interval": "1m"
+    },
+    {
+      "name": "slack",
+      "title": "Slack Notifications",
+      "description": "Show Slack unread badge count",
+      "mode": "menu-bar",
+      "interval": "1m"
+    }
+  ],
+  "preferences": [
+    {
+      "name": "apiId",
+      "type": "textfield",
+      "title": "Telegram API ID",
+      "description": "Telegram API ID",
+      "required": false,
+      "placeholder": "1234567"
+    },
+    {
+      "name": "apiHash",
+      "type": "textfield",
+      "title": "Telegram API Hash",
+      "description": "Telegram API Hash",
+      "required": false,
+      "placeholder": "abcdefghijklmnopqrstuvwxyz1234567890"
+    },
+    {
+      "name": "sessionKey",
+      "type": "textfield",
+      "title": "Telegram Session Key",
+      "description": "Telegram Session Key",
+      "required": false,
+      "placeholder": "AbCdEfGhIjKlMnOpQrStUvWxYz12345="
+    }
+  ],
+  "dependencies": {
+    "@raycast/api": "^1.50.5",
+    "@raycast/utils": "^1.4.8",
+    "telegram": "^2.26.8"
+  },
+  "devDependencies": {
+    "@raycast/eslint-config": "1.0.5",
+    "@types/node": "18.8.3",
+    "@types/react": "18.0.9",
+    "eslint": "^7.32.0",
+    "prettier": "^2.5.1",
+    "typescript": "^4.4.3"
+  },
+  "scripts": {
+    "build": "ray build -e dist",
+    "dev": "ray develop",
+    "fix-lint": "ray lint --fix",
+    "lint": "ray lint",
+    "publish": "npx @raycast/api@latest publish"
+  }
+}
