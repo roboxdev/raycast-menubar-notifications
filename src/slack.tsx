@@ -12,7 +12,7 @@ export default function Command() {
   const updateBadge = useCallback(() => {
     try {
       const result = execSync(
-        `osascript -e 'tell application "BetterTouchTool" to get_dock_badge_for "Slack" update_interval 5'`
+        `osascript -e 'tell application "BetterTouchTool" to get_dock_badge_for "Slack"'`
       ).toString().trim();
       if (result === "•" || result === "●") {
         setBadgeCount(-1); // dot badge = has unreads but no count
