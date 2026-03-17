@@ -12,14 +12,16 @@ export default function Command() {
   const updateBadge = useCallback(() => {
     try {
       const result = execSync(
-        `osascript -e 'tell application "BetterTouchTool" to get_dock_badge_for "Slack"'`
+        `lsappinfo info -only StatusLabel "Slack"`
       ).toString().trim();
-      if (result === "•" || result === "●") {
+      const match = result.match(/"label"="([^"]*)"/);
+      const label = match?.[1] ?? "";
+      if (label === "•" || label === "●") {
         setBadgeCount(-1); // dot badge = has unreads but no count
-      } else if (result === "missing value" || result === "") {
+      } else if (label === "") {
         setBadgeCount(0);
       } else {
-        const count = parseInt(result);
+        const count = parseInt(label);
         setBadgeCount(isNaN(count) ? 0 : count);
       }
     } catch {
