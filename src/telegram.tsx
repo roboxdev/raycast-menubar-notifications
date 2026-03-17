@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getPreferenceValues, Icon, MenuBarExtra } from "@raycast/api";
+import { Color, getPreferenceValues, Icon, MenuBarExtra } from "@raycast/api";
 import { TelegramClient } from "telegram";
 import { StringSession } from "telegram/sessions";
 import type { Dialog } from "telegram/tl/custom/dialog";
@@ -72,7 +72,7 @@ export default function Command() {
 
   return hideIcon ? null : (
     <MenuBarExtra
-      icon={{ source: Icon.AirplaneTakeoff }}
+      icon={{ source: "telegram.svg", tintColor: Color.PrimaryText }}
       title={SHOW_COUNTER && unreadsCount ? `${unreadsCount}` : undefined}
       isLoading={isLoading}
     >

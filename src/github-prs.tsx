@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { Icon, MenuBarExtra, open } from "@raycast/api";
+import { Color, Icon, MenuBarExtra, open } from "@raycast/api";
 import { execSync } from "child_process";
 
 interface PR {
@@ -38,7 +38,7 @@ export default function Command() {
 
   return hideIcon ? null : (
     <MenuBarExtra
-      icon={{ source: Icon.CodeBlock }}
+      icon={{ source: "github.svg", tintColor: Color.PrimaryText }}
       title={SHOW_COUNTER && prs.length ? `${prs.length}` : undefined}
       isLoading={isLoading}
     >

@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { Icon, MenuBarExtra } from "@raycast/api";
+import { Color, Icon, MenuBarExtra } from "@raycast/api";
 import { execSync } from "child_process";
 
 const HIDE_WHEN_READ = true;
@@ -40,7 +40,7 @@ export default function Command() {
 
   return hideIcon ? null : (
     <MenuBarExtra
-      icon={{ source: Icon.SpeechBubble }}
+      icon={{ source: "slack.svg", tintColor: Color.PrimaryText }}
       title={SHOW_COUNTER ? displayCount : undefined}
       isLoading={isLoading}
     >
