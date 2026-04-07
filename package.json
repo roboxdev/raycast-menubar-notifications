@@ -56,6 +56,31 @@
       "interval": "1m"
     },
     {
+      "name": "jira",
+      "title": "Jira In Progress",
+      "description": "Notify when no Jira issues are In Progress",
+      "mode": "menu-bar",
+      "interval": "30m",
+      "preferences": [
+        {
+          "name": "jiraAuth",
+          "type": "password",
+          "title": "Jira Basic Auth",
+          "description": "Base64 of email:api_token",
+          "required": true,
+          "placeholder": "bWFpbEBleGFtcGxlLmNvbTp0b2tlbg=="
+        },
+        {
+          "name": "jiraBaseUrl",
+          "type": "textfield",
+          "title": "Jira Base URL",
+          "description": "e.g. https://yourcompany.atlassian.net",
+          "required": true,
+          "placeholder": "https://yourcompany.atlassian.net"
+        }
+      ]
+    },
+    {
       "name": "slack",
       "title": "Slack Notifications",
       "description": "Show Slack unread badge count",
