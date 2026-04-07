@@ -5,7 +5,9 @@
   "description": "Unified menubar notifications for Mail, Telegram, GitHub PRs, and Slack",
   "icon": "command-icon.png",
   "author": "robox",
-  "categories": ["Communication"],
+  "categories": [
+    "Communication"
+  ],
   "license": "MIT",
   "commands": [
     {
@@ -95,7 +97,7 @@
   },
   "devDependencies": {
     "@raycast/eslint-config": "1.0.5",
-    "@types/node": "18.8.3",
+    "@types/node": "22.13.10",
     "@types/react": "18.0.9",
     "eslint": "^7.32.0",
     "prettier": "^2.5.1",
