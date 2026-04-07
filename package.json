@@ -20,7 +20,33 @@
       "title": "Telegram Notifications",
       "description": "Show unread Telegram messages",
       "mode": "menu-bar",
-      "interval": "1m"
+      "interval": "1m",
+      "preferences": [
+        {
+          "name": "apiId",
+          "type": "textfield",
+          "title": "Telegram API ID",
+          "description": "Telegram API ID",
+          "required": true,
+          "placeholder": "1234567"
+        },
+        {
+          "name": "apiHash",
+          "type": "textfield",
+          "title": "Telegram API Hash",
+          "description": "Telegram API Hash",
+          "required": true,
+          "placeholder": "abcdefghijklmnopqrstuvwxyz1234567890"
+        },
+        {
+          "name": "sessionKey",
+          "type": "textfield",
+          "title": "Telegram Session Key",
+          "description": "Telegram Session Key",
+          "required": true,
+          "placeholder": "AbCdEfGhIjKlMnOpQrStUvWxYz12345="
+        }
+      ]
     },
     {
       "name": "github-prs",
@@ -35,32 +61,6 @@
       "description": "Show Slack unread badge count",
       "mode": "menu-bar",
       "interval": "1m"
-    }
-  ],
-  "preferences": [
-    {
-      "name": "apiId",
-      "type": "textfield",
-      "title": "Telegram API ID",
-      "description": "Telegram API ID",
-      "required": false,
-      "placeholder": "1234567"
-    },
-    {
-      "name": "apiHash",
-      "type": "textfield",
-      "title": "Telegram API Hash",
-      "description": "Telegram API Hash",
-      "required": false,
-      "placeholder": "abcdefghijklmnopqrstuvwxyz1234567890"
-    },
-    {
-      "name": "sessionKey",
-      "type": "textfield",
-      "title": "Telegram Session Key",
-      "description": "Telegram Session Key",
-      "required": false,
-      "placeholder": "AbCdEfGhIjKlMnOpQrStUvWxYz12345="
     }
   ],
   "dependencies": {
