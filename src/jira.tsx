@@ -44,6 +44,7 @@ export default function Command() {
   return hideIcon ? null : issues.length === 0 ? (
     <MenuBarExtra icon={{ source: "jira.svg", tintColor: Color.Red }} isLoading={isLoading}>
       <MenuBarExtra.Item title="No issues In Progress" />
+      <MenuBarExtra.Item icon={Icon.RotateClockwise} title="Refresh" onAction={update} />
     </MenuBarExtra>
   ) : (
     <MenuBarExtra icon={{ source: "jira.svg", tintColor: Color.PrimaryText }} isLoading={isLoading}>
