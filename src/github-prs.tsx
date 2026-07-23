@@ -19,7 +19,7 @@ export default function Command() {
   const updatePRs = useCallback(() => {
     try {
       const result = execSync(
-        `/opt/homebrew/bin/gh search prs --review-requested=@me --state=open --json repository,number,url,title`,
+        `/opt/homebrew/bin/gh search prs --review-requested=@me --state=open --draft=false --json repository,number,url,title`,
         { timeout: 15000, env: { ...process.env, GH_PAGER: "" } }
       ).toString();
       const parsed: PR[] = JSON.parse(result);
