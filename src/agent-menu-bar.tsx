@@ -3,13 +3,7 @@ import { Color, getFrontmostApplication, MenuBarExtra } from "@raycast/api";
 import { aggregateSessions } from "../lib/status-core";
 import type { AggregateStatus } from "../lib/status-core";
 import type { AgentConfig } from "./agent-config";
-import {
-  clearAgentState,
-  isApplicationProcessRunning,
-  markCompletedAsRead,
-  readAgentSessions,
-  resetAgentAttention,
-} from "./state-store";
+import { clearAgentState, isApplicationProcessRunning, markCompletedAsRead, readAgentSessions } from "./state-store";
 
 interface ViewState {
   isLoading: boolean;
@@ -56,7 +50,7 @@ export function AgentMenuBar({ config }: { config: AgentConfig }) {
       <MenuBarExtra.Item
         title="Reset Status"
         onAction={async () => {
-          await resetAgentAttention(config.id);
+          await clearAgentState(config.id);
           await refresh();
         }}
       />

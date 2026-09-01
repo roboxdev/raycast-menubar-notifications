@@ -88,16 +88,6 @@ export async function markCompletedAsRead(agent: AgentId, sessions: SessionState
   return updated;
 }
 
-export async function resetAgentAttention(agent: AgentId): Promise<void> {
-  const sessions = await readAgentSessions(agent);
-  await Promise.all(
-    sessions.map(async (session) => {
-      const next = resetAttentionState(session);
-      if (next !== session) await writeState(next);
-    }),
-  );
-}
-
 export async function clearAgentState(agent: AgentId): Promise<void> {
   await rm(agentDirectory(agent), { recursive: true, force: true });
 }
