@@ -11,9 +11,7 @@ export default function Command() {
 
   const updateBadge = useCallback(() => {
     try {
-      const result = execSync(
-        `lsappinfo info -only StatusLabel "Slack"`
-      ).toString().trim();
+      const result = execSync(`lsappinfo info -only StatusLabel "Slack"`).toString().trim();
       const match = result.match(/"label"="([^"]*)"/);
       const label = match?.[1] ?? "";
       if (label === "•" || label === "●") {
@@ -44,7 +42,15 @@ export default function Command() {
       title={SHOW_COUNTER ? displayCount : undefined}
       isLoading={isLoading}
     >
-      <MenuBarExtra.Item title={badgeCount === -1 ? "New activity in Slack" : badgeCount && badgeCount > 0 ? `${badgeCount} Unread in Slack` : "No Unread in Slack"} />
+      <MenuBarExtra.Item
+        title={
+          badgeCount === -1
+            ? "New activity in Slack"
+            : badgeCount && badgeCount > 0
+              ? `${badgeCount} Unread in Slack`
+              : "No Unread in Slack"
+        }
+      />
       <MenuBarExtra.Item icon={Icon.RotateClockwise} title={"Refresh"} onAction={updateBadge} />
     </MenuBarExtra>
   );

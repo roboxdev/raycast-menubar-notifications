@@ -1,85 +1,121 @@
 # Menubar Notifications
 
-A [Raycast](https://raycast.com) extension that surfaces unread counts from Mail, Telegram, Slack, GitHub, and Jira as separate macOS menu bar items.
+A personal [Raycast](https://raycast.com) extension that keeps actionable notifications and local AI agent status visible in the macOS menu bar.
 
-Each source is its own menu bar command, so you can enable only the ones you need. Icons stay hidden while there is nothing to act on and appear — with a counter — as soon as something needs attention.
+Each source is an independent menu bar command, so it can be enabled or disabled separately. Most icons stay hidden while there is nothing to act on.
 
 ## Commands
 
 | Command | What it shows | Refresh | Hidden when |
 | --- | --- | --- | --- |
-| **Mail Notifications** | Unread messages in the Apple Mail inbox | 1 min | Inbox is read |
-| **Telegram Notifications** | Unread dialogs, muted chats excluded | 1 min | Nothing unread |
-| **Slack Notifications** | The Slack app's dock badge count | 1 min | No unreads |
-| **GitHub PR Notifications** | Pull requests requesting your review | 1 min | No PRs pending |
-| **Jira In Progress** | Warns (red icon) when no issue is In Progress | 30 min | At least one issue is In Progress |
+| **Mail Notifications** | Unread Apple Mail messages | 1 min | Inbox is read |
+| **Telegram Notifications** | Unread dialogs, excluding muted chats | 1 min | Nothing is unread |
+| **Slack Notifications** | Slack's dock badge count | 1 min | Nothing is unread |
+| **GitHub PR Notifications** | Pull requests requesting your review | 1 min | No reviews are pending |
+| **Jira In Progress** | A warning when no assigned issue is In Progress | 30 min | At least one issue is In Progress |
+| **Codex Status** | Codex Desktop working or attention state | 10 sec | Codex is closed or idle |
+| **Claude Status** | Default Claude Desktop profile working or attention state | 10 sec | Claude is closed or idle |
 
-Clicking an item in the Mail, Telegram, and Slack menus just shows the count; GitHub and Jira menus list the actual items and open them in the browser. Every menu has a **Refresh** action for an immediate update.
+Agent icons use the system text color while an agent is working and turn red when a session needs input, permission, or attention after completing in the background.
 
 ## Requirements
 
 - macOS with Raycast
-- Node.js and [pnpm](https://pnpm.io)
-- [GitHub CLI](https://cli.github.com) (`gh`), authenticated via `gh auth login` — for the GitHub command
-- Telegram API credentials — for the Telegram command
+- Node.js 22.22.2 or newer
+- [pnpm](https://pnpm.io)
+- [GitHub CLI](https://cli.github.com) (`gh`), authenticated with `gh auth login`, for GitHub PRs
+- Telegram API credentials for Telegram notifications
+- Codex Desktop at `/Applications/ChatGPT.app` and Claude Desktop at `/Applications/Claude.app` for agent status
 
 ## Installation
 
-```bash
-git clone <repository-url>
-cd raycast-menubar-notifications
+```sh
 pnpm install
 pnpm dev
 ```
 
-`pnpm dev` builds the extension and registers it with Raycast in development mode. Open Raycast → Extensions to enable the individual menu bar commands.
+Run the commands you want once from Raycast and enable their menu bar items under Raycast → Extensions → Menubar Notifications.
 
 ## Configuration
 
-Preferences are defined per command. Open Raycast → Extensions → Menubar Notifications, select a command, and fill in its fields.
-
 ### Telegram
 
-| Preference | Description |
-| --- | --- |
-| `Telegram API ID` | API ID from [my.telegram.org](https://my.telegram.org) |
-| `Telegram API Hash` | API hash from the same page |
-| `Telegram Session Key` | A [GramJS](https://gram.js.org) `StringSession` value |
-
-To generate the session key, run a one-off GramJS login script locally and copy the resulting string session. It authenticates as your Telegram account — treat it like a password and never commit it.
+Set the Telegram API ID, API hash, and GramJS `StringSession` in the command preferences. Treat the session value like a password.
 
 ### Jira
 
-| Preference | Description |
-| --- | --- |
-| `Jira Basic Auth` | Base64 of `email:api_token`, e.g. `printf 'you@example.com:TOKEN' \| base64` |
-| `Jira Base URL` | e.g. `https://yourcompany.atlassian.net` |
+Set the Jira base URL and Basic Auth value (base64-encoded `email:api_token`) in the command preferences. The command queries `assignee = currentUser() AND status = "In Progress"`.
 
-Create the API token at [id.atlassian.com/manage-profile/security/api-tokens](https://id.atlassian.com/manage-profile/security/api-tokens). The command queries `assignee = currentUser() AND status = "In Progress"`.
+### Mail, Slack, and GitHub
 
-### Mail, Slack, GitHub
+- Mail uses AppleScript and may request macOS automation permission.
+- Slack reads the running app's dock badge through `lsappinfo`.
+- GitHub invokes `/opt/homebrew/bin/gh search prs --review-requested=@me`.
 
-No preferences. They rely on local tooling instead:
+## Agent status hooks
 
-- **Mail** runs AppleScript against Apple Mail. macOS will ask for automation permission on first run.
-- **Slack** reads the app's dock badge via `lsappinfo`, so the Slack desktop app must be running.
-- **GitHub** shells out to `gh search prs --review-requested=@me`. The path is hardcoded to `/opt/homebrew/bin/gh` (Apple Silicon Homebrew); adjust it in [src/github-prs.tsx](src/github-prs.tsx) for an Intel Mac or a different install location.
+The stable launcher path is:
 
-## Customization
-
-Each command file starts with a couple of display flags you can flip:
-
-```ts
-const HIDE_WHEN_EMPTY = true; // hide the menu bar icon when there is nothing to show
-const SHOW_COUNTER = true;    // show the numeric count next to the icon
+```text
+/Users/robox/Projects/raycast-menubar-notifications/scripts/agent-status-hook
 ```
 
-Polling intervals live in the `commands` section of [package.json](package.json).
+It selects the most recently installed NVM Node runtime, falling back to `node` on `PATH`. Set `MENUBAR_NOTIFICATIONS_NODE` to override discovery.
 
-## Security
+Status files contain only allowlisted lifecycle metadata and are stored under:
 
-No credentials are stored in this repository. Everything sensitive is entered through Raycast preferences and kept in the macOS Keychain — the values in `package.json` are placeholders only.
+```text
+~/Library/Application Support/Menubar Notifications/agent-status/sessions/
+```
 
-## License
+Prompts, assistant messages, tool inputs, and tool outputs are never persisted.
 
-MIT
+Configure the following lifecycle events to invoke the launcher with `--agent codex` in `~/.codex/hooks.json`:
+
+```text
+SessionStart, UserPromptSubmit, PreToolUse, PostToolUse,
+PermissionRequest, Stop, SessionEnd
+```
+
+Configure the same launcher with `--agent claude` in `~/.claude/settings.json` for:
+
+```text
+SessionStart, UserPromptSubmit, PreToolUse, PostToolUse,
+PermissionRequest, Notification, Stop, StopFailure, SessionEnd
+```
+
+The Claude `Notification` matcher is:
+
+```text
+permission_prompt|idle_prompt|elicitation_dialog|elicitation_url_dialog|agent_needs_input
+```
+
+The handler accepts Codex events only from ChatGPT Desktop ancestry. For Claude it accepts the default desktop profile and rejects `Claude-personal` and unrelated CLI sessions.
+
+### Diagnostics
+
+Clear one agent's state:
+
+```sh
+scripts/agent-status-hook --agent codex --reset
+scripts/agent-status-hook --agent claude --reset
+```
+
+Send a synthetic terminal event by explicitly bypassing desktop ancestry filtering:
+
+```sh
+printf '%s' '{"session_id":"diagnostic","hook_event_name":"PermissionRequest"}' | \
+  MENUBAR_NOTIFICATIONS_ALLOW_UNSCOPED=1 \
+  scripts/agent-status-hook --agent codex
+```
+
+## Development
+
+```sh
+pnpm test
+pnpm lint
+pnpm build
+pnpm dev
+```
+
+This is a personal extension and is not intended for publication. Agent menu bar assets are packaged locally; runtime code does not read icons from `/Applications`.

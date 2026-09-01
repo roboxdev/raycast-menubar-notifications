@@ -13,7 +13,7 @@ export default function Command() {
     const r = execSync(
       `osascript -e 'tell application "Mail"
     set unreadCount to count of (messages of inbox whose read status is false)
-end tell'`
+end tell'`,
     ).toString();
     if (r) {
       setUnreadsCount(parseInt(r));
@@ -28,7 +28,11 @@ end tell'`
   const hideIcon = !isLoading && unreadsCount === 0 && HIDE_WHEN_READ;
 
   return hideIcon ? null : (
-    <MenuBarExtra icon={{ source: Icon.Envelope }} title={SHOW_COUNTER && unreadsCount ? `${unreadsCount}` : undefined} isLoading={isLoading}>
+    <MenuBarExtra
+      icon={{ source: Icon.Envelope }}
+      title={SHOW_COUNTER && unreadsCount ? `${unreadsCount}` : undefined}
+      isLoading={isLoading}
+    >
       <MenuBarExtra.Item title={unreadsCount ? `${unreadsCount} Unread Emails` : "No Unread Emails"} />
       <MenuBarExtra.Item icon={Icon.RotateClockwise} title={"Refresh"} onAction={updateUnreadMailCount} />
     </MenuBarExtra>

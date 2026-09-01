@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { Color, getPreferenceValues, Icon, MenuBarExtra } from "@raycast/api";
-import { TelegramClient } from "telegram";
-import { StringSession } from "telegram/sessions";
-import type { Dialog } from "telegram/tl/custom/dialog";
+import { TelegramClient } from "teleproto";
+import { StringSession } from "teleproto/sessions";
+import type { Dialog } from "teleproto/tl/custom/dialog";
 
 interface Preferences {
   apiId: string;
@@ -64,7 +64,7 @@ export default function Command() {
   useEffect(() => {
     const timerId = setTimeout(updateUnreadTelegramMessagesCount, 200);
     return () => {
-      clearInterval(timerId);
+      clearTimeout(timerId);
     };
   }, []);
 
@@ -77,7 +77,7 @@ export default function Command() {
       isLoading={isLoading}
     >
       {unreadDialogs.length > 0 ? (
-        unreadDialogs.map((d, i) => <MenuBarExtra.Item key={i} title={d.title} />)
+        unreadDialogs.map((d, i) => <MenuBarExtra.Item key={i} title={d.title ?? "Untitled dialog"} />)
       ) : (
         <MenuBarExtra.Item title="No Unread Dialogs" />
       )}

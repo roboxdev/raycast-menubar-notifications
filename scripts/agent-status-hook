@@ -1,0 +1,28 @@
+#!/bin/zsh
+
+set -eu
+
+script_directory=${0:A:h}
+node_path=${MENUBAR_NOTIFICATIONS_NODE:-}
+
+if [[ -z "$node_path" ]]; then
+  latest_mtime=0
+  for candidate in "$HOME"/.nvm/versions/node/*/bin/node(N); do
+    candidate_mtime=$(/usr/bin/stat -f %m "$candidate")
+    if (( candidate_mtime > latest_mtime )); then
+      node_path=$candidate
+      latest_mtime=$candidate_mtime
+    fi
+  done
+fi
+
+if [[ -z "$node_path" ]]; then
+  node_path=$(command -v node || true)
+fi
+
+if [[ -z "$node_path" || ! -x "$node_path" ]]; then
+  print -u2 "[menubar-notifications] Node.js was not found"
+  exit 127
+fi
+
+exec "$node_path" "$script_directory/agent-status-handler.mjs" "$@"
