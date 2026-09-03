@@ -2,8 +2,14 @@ import assert from "node:assert/strict";
 import { test } from "node:test";
 import statusCore from "../lib/status-core.js";
 
-const { aggregateSessions, classifyInvocation, isMainApplicationProcess, resetAttentionState, transitionForHook } =
-  statusCore;
+const {
+  aggregateSessions,
+  classifyInvocation,
+  isMainApplicationProcess,
+  reconcileActiveSessions,
+  resetAttentionState,
+  transitionForHook,
+} = statusCore;
 const now = new Date("2026-09-01T00:00:00.000Z");
 
 function hook(agent, hook_event_name, extra = {}) {
@@ -48,6 +54,27 @@ test("aggregates attention over working and suppresses it in foreground", () => 
   assert.equal(aggregateSessions([working, attention]), "attention");
   assert.equal(aggregateSessions([working, attention], { isForeground: true }), "working");
   assert.equal(aggregateSessions([attention], { isForeground: true }), "hidden");
+});
+
+test("keeps an active Codex turn working when a transient Stop arrives", () => {
+  const completed = hook("codex", "Stop");
+  const [active] = reconcileActiveSessions([completed], new Set([completed.sessionId]));
+  assert.equal(active.status, "working");
+  assert.equal(active.attentionKind, undefined);
+
+  const [stopped] = reconcileActiveSessions([completed], new Set());
+  assert.equal(stopped, completed);
+});
+
+test("does not suppress explicit attention or non-Codex completion", () => {
+  const permission = hook("codex", "PermissionRequest");
+  const claudeCompleted = hook("claude", "Stop");
+  const [unchangedPermission, unchangedClaude] = reconcileActiveSessions(
+    [permission, claudeCompleted],
+    new Set([permission.sessionId, claudeCompleted.sessionId]),
+  );
+  assert.equal(unchangedPermission, permission);
+  assert.equal(unchangedClaude, claudeCompleted);
 });
 
 test("manual reset clears only attention-like states", () => {

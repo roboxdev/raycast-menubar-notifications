@@ -16,7 +16,7 @@ export const AGENT_CONFIGS: Record<AgentId, AgentConfig> = {
     bundleId: "com.openai.codex",
     processExecutable: "/Applications/ChatGPT.app/Contents/MacOS/ChatGPT",
     excludedProcessFragments: [],
-    icon: "codex-menubar.png",
+    icon: "openai-menubar.svg",
   },
   claude: {
     id: "claude",
@@ -24,6 +24,6 @@ export const AGENT_CONFIGS: Record<AgentId, AgentConfig> = {
     bundleId: "com.anthropic.claudefordesktop",
     processExecutable: "/Applications/Claude.app/Contents/MacOS/Claude",
     excludedProcessFragments: ["Claude-personal"],
-    icon: "claude-menubar.png",
+    icon: "claude-menubar.svg",
   },
 };

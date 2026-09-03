@@ -16,6 +16,7 @@ export interface SessionState {
 export function isAgentId(value: unknown): value is AgentId;
 export function transitionForHook(agent: AgentId, payload: Record<string, unknown>, now?: Date): SessionState | null;
 export function aggregateSessions(sessions: SessionState[], options?: { isForeground?: boolean }): AggregateStatus;
+export function reconcileActiveSessions(sessions: SessionState[], activeSessionIds: Iterable<string>): SessionState[];
 export function resetAttentionState(session: SessionState, now?: Date): SessionState;
 export function classifyInvocation(agent: AgentId, ancestorCommands: string[], env?: Record<string, string>): boolean;
 export function isMainApplicationProcess(

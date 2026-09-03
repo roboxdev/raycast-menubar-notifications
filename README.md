@@ -69,6 +69,11 @@ Status files contain only allowlisted lifecycle metadata and are stored under:
 ```
 
 Prompts, assistant messages, tool inputs, and tool outputs are never persisted.
+The menu resolves display-only session names from Codex's local session index or Claude
+Desktop's session metadata, using Claude's runtime process name only as a fallback. These
+names are read at refresh time and are not copied into the status files.
+For Codex, an active turn recorded in the local thread history takes precedence over a
+transient `Stop` hook, preventing the icon from flashing red between multi-step updates.
 
 Configure the following lifecycle events to invoke the launcher with `--agent codex` in `~/.codex/hooks.json`:
 
